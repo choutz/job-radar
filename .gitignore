@@ -1,0 +1,7 @@
+.idea/
+*.iml
+*.db
+*.xml
+__pycache__/
+*.pyc
+.env
