@@ -21,7 +21,7 @@ def scrape_one_term(term):
             site_name=["indeed"],
             search_term=term,
             location="Remote",
-            results_wanted=20,
+            results_wanted=40,
             hours_old=24 * 7,
             country_indeed="USA",
         )
@@ -67,7 +67,7 @@ def scrape_one_term(term):
             # handle duplicates
             except IntegrityError as e:
                 session.rollback()
-                if "uq_job" not in str(e.orig):
+                if "UNIQUE constraint failed" not in str(e.orig):
                     print(f"  ! Unexpected integrity error: {e.orig}")
 
             except Exception as e:

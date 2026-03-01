@@ -15,23 +15,30 @@ class Job(Base):
         UniqueConstraint("company", "title", "date_posted", name="uq_job"),
     )
 
-    id              = Column(Integer, primary_key=True, autoincrement=True)
-    title           = Column(String)
-    company         = Column(String)
-    location        = Column(String)
-    is_remote       = Column(Boolean)
-    salary_min      = Column(Float)
-    salary_max      = Column(Float)
-    salary_interval = Column(String)
-    date_posted     = Column(String)
-    date_scraped    = Column(DateTime, default=datetime.now)
-    source          = Column(String)
-    job_url         = Column(String)
-    apply_url       = Column(String)
-    apply_type      = Column(String)  # 'ats', 'company_site'
-    ats_name        = Column(String)
-    description     = Column(Text)
-    status          = Column(String, default="new")  # new, applied, rejected, saved
+    id                        = Column(Integer, primary_key=True, autoincrement=True)
+    title                     = Column(String)
+    company                   = Column(String)
+    location                  = Column(String)
+    is_remote                 = Column(Boolean)
+    salary_min                = Column(Float)
+    salary_max                = Column(Float)
+    salary_interval           = Column(String)
+    date_posted               = Column(String)
+    date_scraped              = Column(DateTime, default=datetime.now)
+    source                    = Column(String)
+    job_url                   = Column(String)
+    apply_url                 = Column(String)
+    apply_type                = Column(String)  # 'ats', 'company_site'
+    ats_name                  = Column(String)
+    description               = Column(Text)
+    status                    = Column(String, default="new")  # new, applied, rejected, saved
+    relevance_score           = Column(Integer)
+    relevance_reason          = Column(String)
+    seniority                 = Column(String)
+    role_type                 = Column(String)
+    years_experience_required = Column(Integer)
+    key_skills                = Column(String)  # stored as JSON string
+    red_flags                 = Column(String)  # stored as JSON string
 
 
 class ScrapeRun(Base):
