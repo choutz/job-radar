@@ -1,8 +1,9 @@
-import streamlit as st
 import json
+import streamlit as st
 from models import get_session, Job
 
 st.set_page_config(page_title="Job Refresh", layout="wide")
+
 
 def check_password():
     if st.session_state.get("authenticated"):
@@ -15,6 +16,7 @@ def check_password():
         else:
             st.error("Wrong password")
     return False
+
 
 if not check_password():
     st.stop()
@@ -94,7 +96,8 @@ for job in jobs:
             new_status = st.selectbox(
                 "Status",
                 ["new", "saved", "applied", "rejected"],
-                index=["new", "saved", "applied", "rejected"].index(current) if current in ["new", "saved", "applied", "rejected"] else 0,
+                index=["new", "saved", "applied", "rejected"].index(current) if current in ["new", "saved", "applied",
+                                                                                            "rejected"] else 0,
                 key=f"status_{job.id}"
             )
             if new_status != current:
