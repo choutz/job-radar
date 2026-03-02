@@ -1,5 +1,6 @@
+EMAIL_ALERT_THRESHOLD = 6
+
 SEARCH_TERMS = [
-    # "data scientist",
     "remote data scientist",
     "data scientist supply chain"
 ]
