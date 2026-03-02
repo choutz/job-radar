@@ -1,6 +1,6 @@
-# 🔍 Job Radar
+# Job Radar
 
-A personal job tracking pipeline that scrapes listings from Indeed, scores them for relevance using Claude AI, and surfaces the best matches in a password-protected dashboard — with a nightly email digest.
+A personal job tracking pipeline that scrapes listings from Indeed, scores them for relevance using Claude AI, surfaces the best matches in a password-protected dashboard, and sends a nightly email digest.
 
 Built in Python with a fully automated cloud infrastructure: jobs are scraped and enriched twice daily via GitHub Actions, stored in Postgres on Supabase, and served via a Streamlit dashboard.
 
@@ -9,11 +9,11 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 ## What it does
 
 1. **Scrapes** job postings from Indeed using [JobSpy](https://github.com/speedyapply/JobSpy)
-2. **Classifies** each posting by apply type — keeps only direct company applications and known ATS platforms (Greenhouse, Lever, Workday, etc.) — filters out aggregator sites
-3. **Enriches** each job using the Claude API (Haiku), scoring relevance 1–10 against a custom candidate profile including resume, experience level, location preferences, and domain interests
+2. **Classifies** each posting by apply type. Keeps only direct company applications and known ATS platforms (Greenhouse, Lever, Workday, etc.). Filters out aggregator sites
+3. **Enriches** each job using the Claude API (Haiku), scoring relevance 1-10 against a custom candidate profile including resume, experience level, location preferences, and domain interests
 4. **Auto-rejects** low-scoring jobs so the dashboard stays clean
 5. **Serves** a filterable dashboard showing unreviewed jobs sorted by relevance score, with one-click apply links and status tracking
-6. **Emails** a nightly HTML digest of all unreviewed jobs scoring 6+
+6. **Emails** a nightly HTML digest of all unreviewed jobs scoring above a customizable threshold
 
 ---
 
@@ -64,18 +64,15 @@ pip install -r requirements.txt
 
 ### 2. Configure your profile
 
-Edit `config.py` to add your background, resume summary, and search terms:
+Edit `config.py` to personalize the tool for your background. The key things to change:
 
-```python
-USER_PROFILE = """
-Your experience, interests, location preferences...
-"""
+**`USER_PROFILE`** — paste in your resume summary, experience level, location preferences, and interests.
 
-SEARCH_TERMS = [
-    "data scientist remote",
-    "your custom search terms",
-]
-```
+**`SEARCH_TERMS`** — Indeed search queries to run. Keep this list short — the AI handles relevance filtering so a few broad terms are enough, and too many rapid requests can trigger temporary IP blocks from Indeed.
+
+**`EMAIL_ALERT_THRESHOLD`** — minimum relevance score (1-10) to include in the nightly digest. Default is 6.
+
+**`RELEVANCE_SCORE_INSTRUCTIONS`** — customize how Claude scores jobs. Add or remove criteria based on what matters to you (seniority, domain, location, etc).
 
 ### 3. Set up environment variables
 
