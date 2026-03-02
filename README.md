@@ -98,8 +98,7 @@ alembic upgrade head
 ### 5. Run locally
 
 ```bash
-python main.py          # scrape and store jobs
-python ai_enricher.py   # score unscored jobs
+python main.py          # scrape, store, and enrich jobs
 python emailer.py       # send digest (optional)
 streamlit run dashboard.py
 ```
