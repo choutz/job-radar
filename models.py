@@ -20,7 +20,7 @@ def get_database_url():
     return url or f"sqlite:///{Path(__file__).parent}/jobs.db"
 
 
-DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{Path(__file__).parent}/jobs.db")
+DATABASE_URL = get_database_url()
 engine = create_engine(DATABASE_URL, echo=False)
 
 
