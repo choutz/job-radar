@@ -33,8 +33,9 @@ REJECT_DOMAINS = {
     "simplyhired.com",
     "ladders.com",
     "snagajob.com",
-    "recruitics.com",   # tracking redirects, unreliable
+    "recruitics.com",  # tracking redirects, unreliable
 }
+
 
 def classify_job(job_url_direct: str) -> dict:
     """
@@ -64,7 +65,6 @@ def classify_job(job_url_direct: str) -> dict:
 
     # Otherwise assume it's a company career site — keep it
     return {"apply_type": "company_site", "ats_name": None, "apply_url": job_url_direct}
-
 
 
 if __name__ == "__main__":

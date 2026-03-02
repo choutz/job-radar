@@ -1,16 +1,13 @@
-from jobspy import scrape_jobs
-from classifier import classify_job
-from models import init_db, get_session, Job, ScrapeRun
-from datetime import datetime
-from sqlalchemy.exc import IntegrityError
-import time
 import random
+import time
+from datetime import datetime
 
-SEARCH_TERMS = [
-    # "data scientist",
-    "remote data scientist",
-    "data scientist supply chain"
-]
+from jobspy import scrape_jobs
+from sqlalchemy.exc import IntegrityError
+
+from classifier import classify_job
+from config import SEARCH_TERMS
+from models import get_session, Job, ScrapeRun
 
 
 def scrape_one_term(term):
