@@ -5,3 +5,6 @@
 __pycache__/
 *.pyc
 .env
+alembic/
+sandbox/
+.streamlit/secrets.toml

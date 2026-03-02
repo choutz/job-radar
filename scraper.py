@@ -7,7 +7,7 @@ import time
 import random
 
 SEARCH_TERMS = [
-    "data scientist",
+    # "data scientist",
     "remote data scientist",
     "data scientist supply chain"
 ]
@@ -67,7 +67,8 @@ def scrape_one_term(term):
             # handle duplicates
             except IntegrityError as e:
                 session.rollback()
-                if "UNIQUE constraint failed" not in str(e.orig):
+                err = str(e.orig).lower()
+                if "uq_job" not in err and "unique" not in err:
                     print(f"  ! Unexpected integrity error: {e.orig}")
 
             except Exception as e:
@@ -86,11 +87,11 @@ def scrape_one_term(term):
 
 
 def run_scrape():
-    init_db()
+    # init_db()
     for i, term in enumerate(SEARCH_TERMS):
         scrape_one_term(term)
         if i < len(SEARCH_TERMS) - 1:
-            delay = random.uniform(8, 15)
+            delay = random.uniform(20, 25)
             print(f"  Waiting {delay:.1f}s before next term...")
             time.sleep(delay)
 

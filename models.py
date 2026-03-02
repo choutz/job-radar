@@ -2,8 +2,23 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, T
 from sqlalchemy.orm import DeclarativeBase, Session
 from datetime import datetime
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
-DATABASE_URL = f"sqlite:///{Path(__file__).parent}/jobs.db"
+load_dotenv()
+
+def get_database_url():
+    # try .env first (local), then streamlit secrets (cloud)
+    url = os.getenv("DATABASE_URL")
+    if not url:
+        try:
+            import streamlit as st
+            url = st.secrets["DATABASE_URL"]
+        except:
+            pass
+    return url or f"sqlite:///{Path(__file__).parent}/jobs.db"
+
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{Path(__file__).parent}/jobs.db")
 engine = create_engine(DATABASE_URL, echo=False)
 
 class Base(DeclarativeBase):
