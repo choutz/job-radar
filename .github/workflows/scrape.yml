@@ -8,13 +8,18 @@ on:
   workflow_dispatch:
     inputs:
       job:
-        description: 'Which job to run'
+        description: 'Which job to run (all, scrape, email)'
         required: false
         default: 'all'
 
 jobs:
   scrape:
-    if: github.event.schedule != '0 3 * * *' || github.event_name == 'workflow_dispatch'
+    # Run if:
+    # 1. It's a schedule event AND NOT the 3am digest time
+    # 2. OR it's a manual trigger AND (job is 'all' OR 'scrape')
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule != '0 3 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'all' || github.event.inputs.job == 'scrape'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,7 +36,12 @@ jobs:
           python ai_enricher.py
 
   email:
-    if: github.event.schedule == '0 3 * * *' || github.event_name == 'workflow_dispatch'
+    # Run if:
+    # 1. It's a schedule event AND it IS the 3am digest time
+    # 2. OR it's a manual trigger AND (job is 'all' OR 'email')
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'all' || github.event.inputs.job == 'email'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
