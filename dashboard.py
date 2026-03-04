@@ -30,18 +30,28 @@ show_statuses = st.sidebar.multiselect(
     default=["new", "saved"]
 )
 show_auto_rejected = st.sidebar.checkbox("Show auto-rejected", value=False)
+show_rejected_apply = st.sidebar.checkbox("Show unscored / rejected apply type", value=False)
 
 # ---- load jobs ----
 with get_session() as session:
+    statuses = show_statuses + (["auto_rejected"] if show_auto_rejected else [])
+
     query = session.query(Job).filter(
-        Job.relevance_score != None,
-        Job.relevance_score >= min_score,
-        Job.status.in_(show_statuses if not show_auto_rejected else show_statuses + ["auto_rejected"]),
-    ).order_by(Job.relevance_score.desc())
+        Job.status.in_(statuses),
+    )
+
+    if not show_rejected_apply:
+        query = query.filter(
+            Job.relevance_score.isnot(None),
+            Job.relevance_score >= min_score,
+            Job.apply_type != "reject",
+        )
+
+    query = query.order_by(Job.relevance_score.desc().nullslast())
 
     jobs = query.all()
     session.expunge_all()
-
+    
 # ---- header ----
 st.title("🔍 Job Refresh")
 st.caption(f"{len(jobs)} jobs · score ≥ {min_score} · status: {', '.join(show_statuses)}")
