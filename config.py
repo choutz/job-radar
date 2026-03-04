@@ -2,22 +2,22 @@ EMAIL_ALERT_THRESHOLD = 6
 
 SEARCH_TERMS = [
     "remote data scientist",
-    "data scientist supply chain"
+    "data scientist supply chain",
+    "data scientist medical device"
 ]
 
-RELEVANCE_SCORE_INSTRUCTIONS = """<1-10 integer, Penalize if: role requires more years than candidate has, 
-role is junior/principal/staff/director/manager level, role is onsite or hybrid outside SLC. 
-Reward if: supply chain / forecasting / OR / medical devices domain, mid-senior IC level, remote>"""
+RELEVANCE_SCORE_INSTRUCTIONS = """<1-10 integer, Penalize if: role requires more than 5-6 yrs experience, 
+role is junior/principal/staff/director/manager level, role is onsite or hybrid outside SLC UT or MSP MN. 
+Reward if: supply chain / forecasting / OR / medical devices domain, mid-senior level, remote, pay range includes $120k/yr>"""
 
 SYSTEM_PROMPT = """You are helping a data scientist evaluate job postings.
 Return ONLY valid JSON with no markdown, no code fences, and no explanation."""
 
 USER_PROFILE = """
 Experience: ~4 years total
-Current target: Mid to Senior individual contributor DS roles only.
-Do NOT recommend junior, principal, staff, director, VP, or manager roles.
+Current target: Mid to Senior individual contributor roles only, not junior, principal, staff, director, VP, or manager roles.
 
-Location: Remote strongly preferred. Hybrid in Salt Lake City, UT acceptable but less ideal.
+Location: Remote strongly preferred. Hybrid in Salt Lake City, UT or Minneapolis/St.Paul metro areas acceptable but less ideal.
 
 RESUME:
 Most Recent: Data Scientist - Logistics & Supply Chain, Black Diamond Equipment (Nov 2023 - Oct 2024, SLC UT)
@@ -37,7 +37,7 @@ Prior: Systems Engineer, Galil Medical (Dec 2018 - Dec 2019, Minneapolis MN)
 - Predictive models from device log files and preclinical data for medical device
 - System-level design verification, regulatory documentation
 
-Education: BS Astrophysics + BS Mechanical Engineering + Minor Mathematics, U of Minnesota, 3.46 GPA
+Education: BS Astrophysics + BS Mechanical Engineering + Minor Mathematics, U of Minnesota
 
 Tech: Python (Pandas, NumPy, SciPy, Scikit-learn, PyTorch, SQLAlchemy, Dash, Flask), SQL, R, MATLAB, C++, C#, Git
 Skills: Applied math, data engineering, predictive modeling, time series, ML in production
@@ -51,7 +51,5 @@ INTERESTS (ranked):
 5. Time series modeling
 6. ML in production
 
-OPEN TO: direct hire, staffing agencies, contract-to-hire
-NOT INTERESTED IN: pure MLOps/software engineering with no modeling, onsite or hybrid outside SLC, DoD / defense roles,
-roles requiring 6+ years experience, junior/principal/staff/director/manager titles
+OPEN TO direct hire, staffing agencies, contract-to-hire
 """
