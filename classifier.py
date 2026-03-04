@@ -25,7 +25,7 @@ ATS_DOMAINS = {
 # Domains to always reject
 REJECT_DOMAINS = {
     "ziprecruiter.com",
-    "glassdoor.com",
+    # "glassdoor.com",
     "linkedin.com",
     "dice.com",
     "monster.com",
