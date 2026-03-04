@@ -92,7 +92,7 @@ for job in jobs:
             st.caption("  |  ".join(meta))
 
         with col2:
-            if job.apply_url:
+            if job.job_url:
                 st.link_button("🔗 Apply", job.job_url, use_container_width=True)
 
             current = job.status or "new"
