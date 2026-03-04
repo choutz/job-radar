@@ -15,7 +15,7 @@ def scrape_one_term(term):
 
     try:
         jobs = scrape_jobs(
-            site_name=["indeed"],
+            site_name=["indeed", "glassdoor"],
             search_term=term,
             location="Remote",
             results_wanted=40,
@@ -54,22 +54,17 @@ def scrape_one_term(term):
                     ats_name=classification["ats_name"],
                     description=row.get("description"),
                 )
-                session.add(job)
-                # write insert statement, send to db, have constraints checked
-                # will throw IntegrityError if duplicate
-                session.flush()
+
+                with session.begin_nested():  # savepoint per row
+                    session.add(job)
+
                 kept += 1
                 print(f"  + {row.get('title')} @ {row.get('company')} [{classification['apply_type']}]")
 
-            # handle duplicates
-            except IntegrityError as e:
-                session.rollback()
-                err = str(e.orig).lower()
-                if "uq_job" not in err and "unique" not in err:
-                    print(f"  ! Unexpected integrity error: {e.orig}")
+            except IntegrityError:
+                pass  # duplicate, silently skip
 
             except Exception as e:
-                session.rollback()
                 print(f"  ! Error on row: {e}")
 
         session.add(ScrapeRun(

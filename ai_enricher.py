@@ -58,10 +58,9 @@ def enrich_pending_jobs(min_score_to_keep: int = 4):
     """Enrich all jobs that haven't been scored yet"""
     with get_session() as session:
         pending = session.query(Job).filter(
-            Job.relevance_score == None,
-            Job.description != None,
+            Job.relevance_score.is_(None),
+            Job.description.isnot(None),
         ).all()
-
         print(f"Found {len(pending)} unscored jobs")
 
         for job in pending:
