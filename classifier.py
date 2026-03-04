@@ -38,32 +38,26 @@ REJECT_DOMAINS = {
 
 
 def classify_job(job_url_direct: str) -> dict:
-    """
-    Returns dict with:
-      - apply_type: 'ats', 'company_site', or 'reject'
-      - ats_name: name of ATS if applicable, else None
-      - apply_url: cleaned URL to use
-    """
     if not job_url_direct or str(job_url_direct) == "nan":
-        return {"apply_type": "reject", "ats_name": None, "apply_url": None}
+        return {"apply_type": "unknown", "ats_name": None, "apply_url": None}
 
     try:
         parsed = urlparse(job_url_direct)
         domain = parsed.netloc.lower().replace("www.", "")
     except Exception:
-        return {"apply_type": "reject", "ats_name": None, "apply_url": None}
-
-    # Reject known job board aggregators
-    for reject in REJECT_DOMAINS:
-        if reject in domain:
-            return {"apply_type": "reject", "ats_name": None, "apply_url": job_url_direct}
+        return {"apply_type": "unknown", "ats_name": None, "apply_url": job_url_direct}
 
     # Check for known ATS
     for ats_domain, ats_name in ATS_DOMAINS.items():
         if ats_domain in domain:
             return {"apply_type": "ats", "ats_name": ats_name, "apply_url": job_url_direct}
 
-    # Otherwise assume it's a company career site — keep it
+    # known aggregators — label but don't reject
+    for reject in REJECT_DOMAINS:
+        if reject in domain:
+            return {"apply_type": "aggregator", "ats_name": None, "apply_url": job_url_direct}
+
+    # company site
     return {"apply_type": "company_site", "ats_name": None, "apply_url": job_url_direct}
 
 

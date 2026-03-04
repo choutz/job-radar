@@ -60,7 +60,6 @@ def enrich_pending_jobs(min_score_to_keep: int = 4):
         pending = session.query(Job).filter(
             Job.relevance_score.is_(None),
             Job.description.isnot(None),
-            Job.apply_type != "reject",  # don't score rejected ones
         ).all()
         print(f"Found {len(pending)} unscored jobs")
 
