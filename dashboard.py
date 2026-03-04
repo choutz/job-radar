@@ -93,7 +93,7 @@ for job in jobs:
 
         with col2:
             if job.apply_url:
-                st.link_button("🔗 Apply", job.apply_url, use_container_width=True)
+                st.link_button("🔗 Apply", job.job_url, use_container_width=True)
 
             current = job.status or "new"
             new_status = st.selectbox(
