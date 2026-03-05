@@ -23,7 +23,7 @@ ATS_DOMAINS = {
 }
 
 # Domains to always reject
-REJECT_DOMAINS = {
+AGGREGATOR_DOMAINS = {
     "ziprecruiter.com",
     # "glassdoor.com",
     "linkedin.com",
@@ -53,7 +53,7 @@ def classify_job(job_url_direct: str) -> dict:
             return {"apply_type": "ats", "ats_name": ats_name, "apply_url": job_url_direct}
 
     # known aggregators — label but don't reject
-    for reject in REJECT_DOMAINS:
+    for reject in AGGREGATOR_DOMAINS:
         if reject in domain:
             return {"apply_type": "aggregator", "ats_name": None, "apply_url": job_url_direct}
 

@@ -1,6 +1,6 @@
 # Job Radar
 
-A personal job tracking pipeline that scrapes listings from Indeed, scores them for relevance using Claude AI, surfaces the best matches in a password-protected dashboard, and sends a nightly email digest.
+A personal job tracking pipeline that scrapes listings from Indeed and LinkedIn, scores them for relevance using Claude AI, surfaces the best matches in a password-protected dashboard, and sends a nightly email digest.
 
 Built in Python with a fully automated cloud infrastructure: jobs are scraped and enriched twice daily via GitHub Actions, stored in Postgres on Supabase, and served via a Streamlit dashboard.
 
@@ -8,27 +8,27 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 
 ## What it does
 
-1. **Scrapes** job postings from Indeed using [JobSpy](https://github.com/speedyapply/JobSpy)
-2. **Classifies** each posting by apply type. Keeps only direct company applications and known ATS platforms (Greenhouse, Lever, Workday, etc.). Filters out aggregator sites
+1. **Scrapes** job postings from Indeed and LinkedIn using [JobSpy](https://github.com/speedyapply/JobSpy)
+2. **Classifies** each posting by apply type (ATS, company site, aggregator) for informational purposes in the dashboard
 3. **Enriches** each job using the Claude API (Haiku), scoring relevance 1-10 against a custom candidate profile including resume, experience level, location preferences, and domain interests
 4. **Auto-rejects** low-scoring jobs so the dashboard stays clean
-5. **Serves** a filterable dashboard showing unreviewed jobs sorted by relevance score, with one-click apply links and status tracking
+5. **Serves** a filterable dashboard showing unreviewed jobs sorted by relevance score, with links to job posts and status tracking
 6. **Emails** a nightly HTML digest of all unreviewed jobs scoring above a customizable threshold
 
 ---
 
 ## Stack
 
-| Layer | Tool |
-|---|---|
-| Scraping | JobSpy (Indeed) |
+| Layer | Tool                                  |
+|---|---------------------------------------|
+| Scraping | JobSpy (Indeed + LinkedIn)            |
 | Classification | Python + regex (ATS domain whitelist) |
-| AI enrichment | Anthropic Claude API (Haiku 4.5) |
-| Database | PostgreSQL via Supabase |
-| ORM + migrations | SQLAlchemy + Alembic |
-| Dashboard | Streamlit |
-| Scheduling | GitHub Actions (cron) |
-| Email | Gmail SMTP |
+| AI enrichment | Anthropic Claude API (Haiku 4.5)      |
+| Database | PostgreSQL via Supabase               |
+| ORM + migrations | SQLAlchemy + Alembic                  |
+| Dashboard | Streamlit                             |
+| Scheduling | GitHub Actions (cron)                 |
+| Email | Gmail SMTP                            |
 
 ---
 
@@ -36,7 +36,7 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 
 ```
 GitHub Actions (cron: 7am + 7pm CT)
-    → scraper.py       — scrapes Indeed, classifies apply URLs
+    → scraper.py       — scrapes jobs, classifies apply URLs
     → ai_enricher.py   — scores unscored jobs via Claude API
 
 GitHub Actions (cron: 9pm CT)
@@ -68,7 +68,7 @@ Edit `config.py` to personalize the tool for your background. The key things to 
 
 **`USER_PROFILE`** — paste in your resume summary, experience level, location preferences, and interests.
 
-**`SEARCH_TERMS`** — Indeed search queries to run. Keep this list short — the AI handles relevance filtering so a few broad terms are enough, and too many rapid requests can trigger temporary IP blocks from Indeed.
+**`SEARCH_TERMS`** — Search queries to run. Keep this list short — the AI handles relevance filtering so a few broad terms are enough, and too many rapid requests can trigger temporary IP blocks.
 
 **`EMAIL_ALERT_THRESHOLD`** — minimum relevance score (1-10) to include in the nightly digest. Default is 6.
 
@@ -119,15 +119,6 @@ streamlit run dashboard.py
 - Add `DATABASE_URL` and `password` to Streamlit secrets
 - Dashboard redeploys automatically on every push
 
----
-
-## ATS Whitelist
-
-Jobs are kept only if the apply URL resolves to a known ATS or direct company career page. Currently supported:
-
-Greenhouse · Lever · Workday · BambooHR · Dayforce · Ashby · iCIMS · SmartRecruiters · Jobvite · Workable · Taleo · SAP SuccessFactors · Rippling
-
-Add more in `classifier.py`.
 
 ---
 
