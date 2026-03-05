@@ -8,7 +8,7 @@ SEARCH_TERMS = [
 
 RELEVANCE_SCORE_INSTRUCTIONS = """<1-10 integer, Penalize if: role requires more than 5-6 yrs experience, 
 role is junior/principal/staff/director/manager level, role is onsite or hybrid outside SLC UT or MSP MN. 
-Reward if: supply chain / forecasting / OR / medical devices domain, mid-senior level, remote, pay range includes $120k/yr>"""
+Reward if: supply chain / forecasting / OR / medical devices domain, or generalist, mid-senior level, remote, pay range includes $120k/yr>"""
 
 SYSTEM_PROMPT = """You are helping a data scientist evaluate job postings.
 Return ONLY valid JSON with no markdown, no code fences, and no explanation."""
@@ -44,8 +44,8 @@ Skills: Applied math, data engineering, predictive modeling, time series, ML in 
 Patents: 2 patents in medical device ablation systems (filed 2021)
 
 INTERESTS (ranked):
-1. Supply chain analytics / data science
-2. Demand forecasting as part of a broader DS role
+1. Supply chain analytics / data science / demand forecasting
+2. Being a generalist
 3. Medical devices (positive given BioFire / Galil Medical background)
 4. Operations research and optimization
 5. Time series modeling
