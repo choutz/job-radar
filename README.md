@@ -82,7 +82,7 @@ Copy the example config and fill in your details:
 cp config/config.example.py config/config.py
 ```
 
-Edit `config/config.py` with your personal information:
+Edit `config/config.py` with your personal information: 
 
 - **`EMAIL_ALERT_THRESHOLD`** — minimum relevance score (1–10) to include in the nightly digest. Default is 6.
 - **`SEARCH_TERMS`** — search queries to run. Keep this short — the AI handles relevance filtering so a few broad terms are enough, and too many rapid requests can trigger temporary IP blocks.
