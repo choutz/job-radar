@@ -3,16 +3,20 @@ import re
 from anthropic import Anthropic
 from anthropic.types import MessageParam
 from dotenv import load_dotenv
-from config import SYSTEM_PROMPT, USER_PROFILE, RELEVANCE_SCORE_INSTRUCTIONS
 from models import get_session, Job
+from models import get_config
+
 
 load_dotenv()
 client = Anthropic()  # picks up ANTHROPIC_API_KEY from .env
 
 
 def get_prompt(job: Job):
+    user_profile = get_config("USER_PROFILE")
+    relevance_score_instructions = get_config("RELEVANCE_SCORE_INSTRUCTIONS")
+
     prompt = f"""
-{USER_PROFILE}
+{user_profile}
 
 Here is a job posting:
 Title: {job.title}
@@ -21,7 +25,7 @@ Description: {job.description[:10000] if job.description else 'N/A'}
 
 Return a JSON object with exactly these fields:
 {{
-  "relevance_score": {RELEVANCE_SCORE_INSTRUCTIONS},
+  "relevance_score": {relevance_score_instructions},
   "relevance_reason": <one sentence why>,
   "seniority": <"junior", "mid", "senior", or "staff">,
   "role_type": <e.g. "demand forecasting", "ML engineering", "general DS", "analytics">,
@@ -41,6 +45,7 @@ def parse_json_response(text: str) -> dict:
 
 
 def enrich_job(job: Job) -> dict:
+    system_prompt = get_config("SYSTEM_PROMPT")
     prompt = get_prompt(job)
     response = client.messages.create(
         model="claude-haiku-4-5-20251001",
@@ -48,7 +53,7 @@ def enrich_job(job: Job) -> dict:
         messages=[
             MessageParam(role="user", content=prompt)
         ],
-        system=SYSTEM_PROMPT,
+        system=system_prompt,
     )
 
     return parse_json_response(response.content[0].text)

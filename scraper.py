@@ -6,8 +6,7 @@ from jobspy import scrape_jobs
 from sqlalchemy.exc import IntegrityError
 
 from classifier import classify_job
-from config import SEARCH_TERMS
-from models import get_session, Job, ScrapeRun
+from models import get_session, Job, ScrapeRun, get_config
 
 
 def _save_jobs(jobs_df, source, session):
@@ -104,11 +103,12 @@ def scrape_linkedin(term):
 
 
 def run_scrape():
-    for i, term in enumerate(SEARCH_TERMS):
+    search_terms = get_config("SEARCH_TERMS")
+    for i, term in enumerate(search_terms):
         scrape_indeed(term)
         time.sleep(random.uniform(20, 25))
         scrape_linkedin(term)
-        if i < len(SEARCH_TERMS) - 1:
+        if i < len(search_terms) - 1:
             time.sleep(random.uniform(20, 25))
 
 

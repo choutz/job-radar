@@ -4,6 +4,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, Text, DateTime, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Session
+import streamlit as st
+
 
 load_dotenv()
 
@@ -13,7 +15,6 @@ def get_database_url():
     url = os.getenv("DATABASE_URL")
     if not url:
         try:
-            import streamlit as st
             url = st.secrets["DATABASE_URL"]
         except:
             pass
@@ -26,6 +27,13 @@ engine = create_engine(DATABASE_URL, echo=False)
 
 class Base(DeclarativeBase):
     pass
+
+
+class Config(Base):
+    __tablename__ = "config"
+
+    key = Column(String, primary_key=True)
+    value = Column(Text)
 
 
 class Job(Base):
@@ -77,3 +85,10 @@ def init_db():
 
 def get_session() -> Session:
     return Session(engine)
+
+
+def get_config(key: str) -> str | None:
+    with get_session() as session:
+        row = session.get(Config, key)
+        return row.value if row else None
+

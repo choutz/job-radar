@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 from models import get_session, Job
 from dotenv import load_dotenv
-from config import EMAIL_ALERT_THRESHOLD
+from models import get_config
 
 load_dotenv()
 
@@ -16,12 +16,13 @@ APP_PASSWORD = os.getenv("EMAIL_APP_PASSWORD")
 
 
 def send_digest():
+    email_alert_threshold = get_config("EMAIL_ALERT_THRESHOLD")
     # get jobs scored >= threshold scraped in last 24 hours
     cutoff = datetime.now() - timedelta(hours=24)
 
     with get_session() as session:
         jobs = session.query(Job).filter(
-            Job.relevance_score >= EMAIL_ALERT_THRESHOLD,
+            Job.relevance_score >= int(email_alert_threshold),
             Job.date_scraped >= cutoff,
             Job.status != "auto_rejected",
         ).order_by(Job.relevance_score.desc()).all()
@@ -34,7 +35,7 @@ def send_digest():
     # build email body
     body = f"""
 <html><body>
-<h2>🔍 Job Radar — {len(jobs)} new job{'s' if len(jobs) != 1 else ''} scoring {EMAIL_ALERT_THRESHOLD}+</h2>
+<h2>🔍 Job Radar — {len(jobs)} new job{'s' if len(jobs) != 1 else ''} scoring {email_alert_threshold}+</h2>
 <p>{datetime.now().strftime('%B %d, %Y')}</p>
 <hr>
 """
