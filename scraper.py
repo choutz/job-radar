@@ -1,3 +1,4 @@
+import json
 import random
 import time
 from datetime import datetime
@@ -103,7 +104,7 @@ def scrape_linkedin(term):
 
 
 def run_scrape():
-    search_terms = get_config("SEARCH_TERMS")
+    search_terms = json.loads(get_config("SEARCH_TERMS"))
     for i, term in enumerate(search_terms):
         scrape_indeed(term)
         time.sleep(random.uniform(20, 25))

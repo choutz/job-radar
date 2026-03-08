@@ -10,7 +10,7 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 
 1. **Scrapes** job postings from Indeed and LinkedIn using [JobSpy](https://github.com/speedyapply/JobSpy)
 2. **Classifies** each posting by apply type (ATS, company site, aggregator) for informational purposes in the dashboard
-3. **Enriches** each job using the Claude API (Haiku), scoring relevance 1-10 against a custom candidate profile including resume, experience level, location preferences, and domain interests
+3. **Enriches** each job using the Claude API (Haiku), scoring relevance 1–10 against a custom candidate profile including resume, experience level, location preferences, and domain interests
 4. **Auto-rejects** low-scoring jobs so the dashboard stays clean
 5. **Serves** a filterable dashboard showing unreviewed jobs sorted by relevance score, with links to job posts and status tracking
 6. **Emails** a nightly HTML digest of all unreviewed jobs scoring above a customizable threshold
@@ -19,16 +19,16 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 
 ## Stack
 
-| Layer | Tool                                  |
-|---|---------------------------------------|
-| Scraping | JobSpy (Indeed + LinkedIn)            |
+| Layer | Tool |
+|---|---|
+| Scraping | JobSpy (Indeed + LinkedIn) |
 | Classification | Python + regex (ATS domain whitelist) |
-| AI enrichment | Anthropic Claude API (Haiku 4.5)      |
-| Database | PostgreSQL via Supabase               |
-| ORM + migrations | SQLAlchemy + Alembic                  |
-| Dashboard | Streamlit                             |
-| Scheduling | GitHub Actions (cron)                 |
-| Email | Gmail SMTP                            |
+| AI enrichment | Anthropic Claude API (Haiku 4.5) |
+| Database | PostgreSQL via Supabase |
+| ORM + migrations | SQLAlchemy + Alembic |
+| Dashboard | Streamlit |
+| Scheduling | GitHub Actions (cron) |
+| Email | Gmail SMTP |
 
 ---
 
@@ -62,21 +62,9 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Configure your profile
+### 2. Set up environment variables
 
-Edit `config.py` to personalize the tool for your background. The key things to change:
-
-**`USER_PROFILE`** — paste in your resume summary, experience level, location preferences, and interests.
-
-**`SEARCH_TERMS`** — Search queries to run. Keep this list short — the AI handles relevance filtering so a few broad terms are enough, and too many rapid requests can trigger temporary IP blocks.
-
-**`EMAIL_ALERT_THRESHOLD`** — minimum relevance score (1-10) to include in the nightly digest. Default is 6.
-
-**`RELEVANCE_SCORE_INSTRUCTIONS`** — customize how Claude scores jobs. Add or remove criteria based on what matters to you (seniority, domain, location, etc).
-
-### 3. Set up environment variables
-
-Create a `.env` file:
+Create a `.env` file in the project root:
 
 ```
 DATABASE_URL=postgresql://...        # Supabase connection string (port 6543 pooler)
@@ -86,13 +74,41 @@ EMAIL_RECIPIENT=your.main@gmail.com
 EMAIL_APP_PASSWORD=xxxxxxxxxxxxxxxx  # Gmail App Password (no spaces)
 ```
 
+### 3. Configure your profile
+
+Copy the example config and fill in your details:
+
+```bash
+cp config/config.example.py config/config.py
+```
+
+Edit `config/config.py` with your personal information:
+
+- **`EMAIL_ALERT_THRESHOLD`** — minimum relevance score (1–10) to include in the nightly digest. Default is 6.
+- **`SEARCH_TERMS`** — search queries to run. Keep this short — the AI handles relevance filtering so a few broad terms are enough, and too many rapid requests can trigger temporary IP blocks.
+- **`RELEVANCE_SCORE_INSTRUCTIONS`** — customize how Claude scores jobs. Add or remove criteria based on what matters to you (seniority, domain, location, etc).
+- **`SYSTEM_PROMPT`** — the system prompt sent to Claude before scoring each job. Controls how the AI interprets and responds to the job description. Rarely needs changing but useful if you want to adjust the output format or tone of the scoring
+- **`USER_PROFILE`** — your resume summary, experience level, location preferences, and interests. This is what Claude uses to score jobs.
+
+> **Note:** `config/config.py` is gitignored and will never be committed. Your resume stays local.
+
 ### 4. Run migrations
 
 ```bash
 alembic upgrade head
 ```
 
-### 5. Run locally
+This creates all tables including the `config` table for storing your profile in Supabase.
+
+### 5. Seed config to the database
+
+```bash
+python seed_config.py
+```
+
+This pushes your `config/config.py` values into the Supabase `config` table. Re-run this anytime you update your profile or search terms — it will overwrite existing values safely.
+
+### 6. Run locally
 
 ```bash
 python main.py          # scrape, store, and enrich jobs
@@ -108,17 +124,29 @@ streamlit run dashboard.py
 - Create a free project at [supabase.com](https://supabase.com)
 - Use the **Transaction mode** connection string (port 6543) for cloud compatibility
 - Run `alembic upgrade head` to create tables
+- Run `python seed_config.py` to populate your config
 
 ### GitHub Actions
 - Add `DATABASE_URL`, `ANTHROPIC_API_KEY`, `EMAIL_SENDER`, `EMAIL_RECIPIENT`, `EMAIL_APP_PASSWORD` as repository secrets
 - The workflow in `.github/workflows/scrape.yml` runs automatically on schedule
 - Trigger manually anytime via **Actions → Run workflow**
+- No config secrets needed — the pipeline reads your profile directly from Supabase at runtime
 
 ### Streamlit Cloud
 - Connect your GitHub repo at [share.streamlit.io](https://share.streamlit.io)
 - Add `DATABASE_URL` and `password` to Streamlit secrets
 - Dashboard redeploys automatically on every push
 
+---
+
+## Updating your profile
+
+To update your resume, search terms, or scoring instructions:
+
+1. Edit `config/config.py` locally
+2. Run `python seed_config.py`
+
+Changes take effect on the next GitHub Actions run.
 
 ---
 
@@ -136,14 +164,17 @@ streamlit run dashboard.py
 
 ```
 job-radar/
-├── main.py              # entry point — runs scraper
-├── scraper.py           # Indeed scraping via JobSpy
-├── classifier.py        # ATS/company site URL classifier
-├── ai_enricher.py       # Claude API enrichment + scoring
-├── emailer.py           # nightly HTML digest
-├── dashboard.py         # Streamlit dashboard
-├── models.py            # SQLAlchemy models + DB connection
-├── config.py            # user profile, search terms, thresholds
-├── alembic/             # DB migrations
-└── .github/workflows/   # GitHub Actions cron jobs
+├── main.py                    # entry point — runs scraper then enricher
+├── scraper.py                 # Indeed + LinkedIn scraping via JobSpy
+├── classifier.py              # ATS/company site URL classifier
+├── ai_enricher.py             # Claude API enrichment + scoring
+├── emailer.py                 # nightly HTML digest
+├── dashboard.py               # Streamlit dashboard
+├── models.py                  # SQLAlchemy models + DB connection
+├── seed_config.py             # seeds config table from local config.py
+├── config/
+│   ├── config.py              # your personal config (gitignored)
+│   └── config.example.py     # template — copy this to config.py
+├── alembic/                   # DB migrations
+└── .github/workflows/         # GitHub Actions cron jobs
 ```
