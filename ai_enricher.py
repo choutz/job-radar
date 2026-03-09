@@ -29,7 +29,7 @@ Return a JSON object with exactly these fields:
   "relevance_reason": <one sentence why>,
   "seniority": <"junior", "mid", "senior", or "staff">,
   "role_type": <e.g. "demand forecasting", "ML engineering", "general DS", "analytics">,
-  "years_experience_required": <integer or null>,
+  "years_experience_required": <integer or null, not string>,
   "key_skills": <list of up to 5 strings>,
   "red_flags": <list of concerns or empty list>
 }}
@@ -93,5 +93,41 @@ def enrich_pending_jobs(min_score_to_keep: int = 4):
                 print(f"  ! Error enriching {job.title}: {e}")
 
 
+def reenrich_all_jobs(min_score_to_keep: int = 4):
+    """Reset and re-score all jobs that have a description, regardless of existing score"""
+    with get_session() as session:
+        all_jobs = session.query(Job).filter(
+            Job.description.isnot(None),
+        ).all()
+        print(f"Found {len(all_jobs)} jobs to re-score")
+
+        for i, job in enumerate(all_jobs, start=1):
+            if i<213:
+                continue
+            try:
+                job.status = "new"
+                result = enrich_job(job)
+
+                job.relevance_score = result["relevance_score"]
+                job.relevance_reason = result["relevance_reason"]
+                job.seniority = result.get("seniority")
+                job.role_type = result.get("role_type")
+                job.years_experience_required = result.get("years_experience_required")
+                job.key_skills = json.dumps(result.get("key_skills", []))
+                job.red_flags = json.dumps(result.get("red_flags", []))
+
+                if job.relevance_score < min_score_to_keep:
+                    job.status = "auto_rejected"
+
+                session.commit()
+                print(f"  ({i}/{len(all_jobs)}) scored {job.title} @ {job.company} → {job.relevance_score}/10")
+
+            except json.JSONDecodeError as e:
+                print(f"  ! ({i}/{len(all_jobs)}) JSON parse error for {job.title}: {e}")
+            except Exception as e:
+                print(f"  ! ({i}/{len(all_jobs)}) Error enriching {job.title}: {e}")
+
+
 if __name__ == "__main__":
-    enrich_pending_jobs()
+    # enrich_pending_jobs()
+    reenrich_all_jobs()
