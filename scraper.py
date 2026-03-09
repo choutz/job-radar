@@ -107,10 +107,10 @@ def run_scrape():
     search_terms = json.loads(get_config("SEARCH_TERMS"))
     for i, term in enumerate(search_terms):
         scrape_indeed(term)
-        time.sleep(random.uniform(20, 25))
+        time.sleep(random.uniform(60, 120))
         scrape_linkedin(term)
         if i < len(search_terms) - 1:
-            time.sleep(random.uniform(20, 25))
+            time.sleep(random.uniform(60, 120))
 
 
 if __name__ == '__main__':
