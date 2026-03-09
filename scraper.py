@@ -103,10 +103,40 @@ def scrape_linkedin(term):
     print(f"  Kept {kept} new jobs")
 
 
+def scrape_glassdoor(term):
+    print(f"\nScraping [glassdoor]: {term}")
+    try:
+        jobs = scrape_jobs(
+            site_name=["glassdoor"],
+            search_term=term,
+            location="USA",
+            is_remote=True,
+            results_wanted=40,
+            hours_old=24 * 14,
+        )
+    except Exception as e:
+        print(f"  Scrape failed: {e}")
+        return
+
+    print(f"  Raw results: {len(jobs)}")
+    with get_session() as session:
+        kept = _save_jobs(jobs, "glassdoor", session)
+        session.add(ScrapeRun(
+            search_term=f"glassdoor:{term}",
+            ran_at=datetime.now(),
+            results_found=len(jobs),
+            results_kept=kept,
+        ))
+        session.commit()
+    print(f"  Kept {kept} new jobs")
+
+
 def run_scrape():
     search_terms = json.loads(get_config("SEARCH_TERMS"))
     for i, term in enumerate(search_terms):
         scrape_indeed(term)
+        time.sleep(random.uniform(60, 120))
+        scrape_glassdoor(term)
         time.sleep(random.uniform(60, 120))
         scrape_linkedin(term)
         if i < len(search_terms) - 1:
