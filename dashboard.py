@@ -24,7 +24,7 @@ if not check_password():
 
 # ---- sidebar ----
 st.sidebar.title("Filters")
-min_score = st.sidebar.slider("Min relevance score", 1, 10, 6)
+min_score = st.sidebar.slider("Min relevance score", 1, 10, 7)
 show_statuses = st.sidebar.multiselect(
     "Show statuses",
     ["new", "saved", "applied", "rejected"],
