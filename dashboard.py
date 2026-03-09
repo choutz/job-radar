@@ -1,4 +1,5 @@
 import json
+import re
 import streamlit as st
 from models import get_session, Job
 
@@ -93,7 +94,7 @@ for job in jobs:
 
             if job.description:
                 with st.expander("Job Description"):
-                    st.text(job.description)
+                    st.text(re.sub(r'\n{2,}', '\n', job.description))
 
         with col2:
             if job.job_url:
