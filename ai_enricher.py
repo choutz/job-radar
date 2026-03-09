@@ -102,8 +102,6 @@ def reenrich_all_jobs(min_score_to_keep: int = 4):
         print(f"Found {len(all_jobs)} jobs to re-score")
 
         for i, job in enumerate(all_jobs, start=1):
-            if i<213:
-                continue
             try:
                 job.status = "new"
                 result = enrich_job(job)
