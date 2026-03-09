@@ -91,6 +91,10 @@ for job in jobs:
                 meta.append(f"📍 {job.location}")
             st.caption("  |  ".join(meta))
 
+            if job.description:
+                with st.expander("Job Description"):
+                    st.text(job.description)
+
         with col2:
             if job.job_url:
                 st.link_button("🔗 Apply", job.job_url, use_container_width=True)
