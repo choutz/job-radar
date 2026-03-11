@@ -153,7 +153,7 @@ Changes take effect on the next GitHub Actions run.
 ## Cost
 
 - **Supabase** — free tier (500MB)
-- **GitHub Actions** — free tier (2,000 min/month; this uses ~300)
+- **GitHub Actions** — free unlimited for public repo, satisfactory monthly free limit for private repo
 - **Streamlit Cloud** — free
 - **Claude API** — ~$0.005 per job enriched on Haiku 4.5; $5 lasts ~1,000 enrichments
 - **Gmail SMTP** — free
