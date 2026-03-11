@@ -79,7 +79,7 @@ EMAIL_APP_PASSWORD=xxxxxxxxxxxxxxxx  # Gmail App Password (no spaces)
 Copy the example config and fill in your details:
 
 ```bash
-cp config/config.example.py config/config.py
+cp config/config_example.py config/config.py
 ```
 
 Edit `config/config.py` with your personal information: 
@@ -174,7 +174,7 @@ job-radar/
 ├── seed_config.py             # seeds config table from local config.py
 ├── config/
 │   ├── config.py              # your personal config (gitignored)
-│   └── config.example.py     # template — copy this to config.py
+│   └── config_example.py     # template — copy this to config.py
 ├── alembic/                   # DB migrations
 └── .github/workflows/         # GitHub Actions cron jobs
 ```
