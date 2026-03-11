@@ -1,6 +1,6 @@
 # Job Radar
 
-A personal job tracking pipeline that scrapes listings from Indeed and LinkedIn, scores them for relevance using Claude AI, surfaces the best matches in a password-protected dashboard, and sends a nightly email digest.
+A personal job tracking pipeline that scrapes listings from Indeed, LinkedIn, and Glassdoor, scores them for relevance using Claude AI, surfaces the best matches in a password-protected dashboard, and sends a nightly email digest.
 
 Built in Python with a fully automated cloud infrastructure: jobs are scraped and enriched twice daily via GitHub Actions, stored in Postgres on Supabase, and served via a Streamlit dashboard.
 
@@ -8,7 +8,7 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 
 ## What it does
 
-1. **Scrapes** job postings from Indeed and LinkedIn using [JobSpy](https://github.com/speedyapply/JobSpy)
+1. **Scrapes** job postings from Indeed, LinkedIn, and Glassdoor using [JobSpy](https://github.com/speedyapply/JobSpy)
 2. **Classifies** each posting by apply type (ATS, company site, aggregator) for informational purposes in the dashboard
 3. **Enriches** each job using the Claude API (Haiku), scoring relevance 1–10 against a custom candidate profile including resume, experience level, location preferences, and domain interests
 4. **Auto-rejects** low-scoring jobs so the dashboard stays clean
@@ -19,16 +19,16 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 
 ## Stack
 
-| Layer | Tool |
-|---|---|
-| Scraping | JobSpy (Indeed + LinkedIn) |
-| Classification | Python + regex (ATS domain whitelist) |
-| AI enrichment | Anthropic Claude API (Haiku 4.5) |
-| Database | PostgreSQL via Supabase |
-| ORM + migrations | SQLAlchemy + Alembic |
-| Dashboard | Streamlit |
-| Scheduling | GitHub Actions (cron) |
-| Email | Gmail SMTP |
+| Layer | Tool                                   |
+|---|----------------------------------------|
+| Scraping | JobSpy (Indeed + LinkedIn + Glassdoor) |
+| Classification | Python + regex (ATS domain whitelist)  |
+| AI enrichment | Anthropic Claude API (Haiku 4.5)       |
+| Database | PostgreSQL via Supabase                |
+| ORM + migrations | SQLAlchemy + Alembic                   |
+| Dashboard | Streamlit                              |
+| Scheduling | GitHub Actions (cron)                  |
+| Email | Gmail SMTP                             |
 
 ---
 
@@ -165,7 +165,7 @@ Changes take effect on the next GitHub Actions run.
 ```
 job-radar/
 ├── main.py                    # entry point — runs scraper then enricher
-├── scraper.py                 # Indeed + LinkedIn scraping via JobSpy
+├── scraper.py                 # scraping via JobSpy
 ├── classifier.py              # ATS/company site URL classifier
 ├── ai_enricher.py             # Claude API enrichment + scoring
 ├── emailer.py                 # nightly HTML digest
