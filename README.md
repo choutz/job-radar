@@ -174,7 +174,7 @@ job-radar/
 ├── seed_config.py             # seeds config table from local config.py
 ├── config/
 │   ├── config.py              # your personal config (gitignored)
-│   └── config_example.py     # template — copy this to config.py
+│   └── config_example.py      # template — copy this to config.py
 ├── alembic/                   # DB migrations
 └── .github/workflows/         # GitHub Actions cron jobs
 ```
