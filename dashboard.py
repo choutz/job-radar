@@ -114,3 +114,11 @@ for job in jobs:
                     j.status = new_status
                     s.commit()
                 st.rerun()
+
+            if current != "rejected":
+                if st.button("Reject", key=f"reject_{job.id}", use_container_width=True):
+                    with get_session() as s:
+                        j = s.get(Job, job.id)
+                        j.status = "rejected"
+                        s.commit()
+                    st.rerun()
