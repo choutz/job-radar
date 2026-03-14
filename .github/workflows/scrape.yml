@@ -2,9 +2,8 @@ name: Scrape and Enrich Jobs
 
 on:
   schedule:
-    - cron: '0 10 * * *'   # 5 AM CDT (10 AM UTC) — scrape
-    - cron: '0 22 * * *'   # 5 PM CDT (10 PM UTC) — scrape
-    - cron: '0 2 * * *'    # 9 PM CDT (2 AM UTC)  — nightly digest
+    - cron: '0 5 * * *'   # 12 AM CDT (10 AM UTC) — scrape
+    - cron: '0 11 * * *'    # 6 AM CDT (2 AM UTC)  — nightly digest
   workflow_dispatch:
     inputs:
       job:
@@ -15,10 +14,10 @@ on:
 jobs:
   scrape:
     # Run if:
-    # 1. It's a scheduled event but NOT the 3 AM UTC (9 PM CST) digest time
+    # 1. It's a scheduled event but NOT the 6 AM UTC (9 PM CST) digest time
     # 2. OR it's a manual trigger for 'all' or 'scrape'
     if: |
-      (github.event_name == 'schedule' && github.event.schedule != '0 2 * * *') ||
+      (github.event_name == 'schedule' && github.event.schedule != '0 11 * * *') ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'all' || github.event.inputs.job == 'scrape'))
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +37,7 @@ jobs:
     # 1. It's a scheduled event and IS the 3 AM UTC (9 PM CST) digest time
     # 2. OR it's a manual trigger for 'all' or 'email'
     if: |
-      (github.event_name == 'schedule' && github.event.schedule == '0 2 * * *') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 11 * * *') ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'all' || github.event.inputs.job == 'email'))
     runs-on: ubuntu-latest
     steps:

@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 
 from jobspy import scrape_jobs
+from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
 from classifier import classify_job
@@ -14,12 +15,27 @@ def _save_jobs(jobs_df, source, session):
     kept = 0
     for _, row in jobs_df.iterrows():
         try:
+            clean_title = (row.get("title") or "").strip()
+            company = (row.get("company") or "").strip()
+            location = (row.get("location") or "").strip()
+
+            exists = session.execute(text("""
+                SELECT 1 FROM jobs
+                WHERE lower(title) = lower(:title)
+                  AND lower(company) = lower(:company)
+                  AND lower(location) = lower(:location)
+                LIMIT 1
+            """), {"title": clean_title, "company": company, "location": location}).fetchone()
+
+            if exists:
+                continue
+
             classification = classify_job(row.get("job_url_direct"))
 
             job = Job(
-                title=row.get("title"),
-                company=row.get("company"),
-                location=row.get("location"),
+                title=clean_title,
+                company=company,
+                location=location,
                 is_remote=bool(row.get("is_remote")),
                 salary_min=row.get("min_amount"),
                 salary_max=row.get("max_amount"),
