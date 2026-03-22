@@ -1,5 +1,5 @@
 anthropic
-python-jobspy
+python-jobspy==1.1.82
 sqlalchemy
 alembic
 psycopg2-binary

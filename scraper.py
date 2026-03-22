@@ -13,11 +13,15 @@ from models import get_session, Job, ScrapeRun, get_config
 
 def _save_jobs(jobs_df, source, session):
     kept = 0
+
+    def _str(val):
+        return val.strip() if isinstance(val, str) else ""
+
     for _, row in jobs_df.iterrows():
         try:
-            clean_title = (row.get("title") or "").strip()
-            company = (row.get("company") or "").strip()
-            location = (row.get("location") or "").strip()
+            clean_title = _str(row.get("title"))
+            company = _str(row.get("company"))
+            location = _str(row.get("location"))
 
             exists = session.execute(text("""
                 SELECT 1 FROM jobs
