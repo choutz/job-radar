@@ -1,5 +1,4 @@
 import json
-import re
 from anthropic import Anthropic
 from anthropic.types import MessageParam
 from dotenv import load_dotenv
@@ -23,7 +22,7 @@ Title: {job.title}
 Company: {job.company}
 Description: {job.description[:10000] if job.description else 'N/A'}
 
-Return a JSON object with exactly these fields:
+Score this posting using the following rubric and return a JSON object with exactly these fields:
 {{
   "relevance_score": {relevance_score_instructions},
   "relevance_reason": <one sentence why>,
@@ -38,10 +37,9 @@ Return a JSON object with exactly these fields:
 
 
 def parse_json_response(text: str) -> dict:
-    # strip markdown code fences if present
-    text = re.sub(r'^```json\s*', '', text.strip())
-    text = re.sub(r'```$', '', text.strip())
-    return json.loads(text.strip())
+    start = text.index('{')
+    end = text.rindex('}') + 1
+    return json.loads(text[start:end])
 
 
 def enrich_job(job: Job) -> dict:
@@ -55,7 +53,6 @@ def enrich_job(job: Job) -> dict:
         ],
         system=system_prompt,
     )
-
     return parse_json_response(response.content[0].text)
 
 
@@ -127,5 +124,5 @@ def reenrich_all_jobs(min_score_to_keep: int = 4):
 
 
 if __name__ == "__main__":
-    # enrich_pending_jobs()
-    reenrich_all_jobs()
+    enrich_pending_jobs()
+    # reenrich_all_jobs()

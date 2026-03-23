@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from pathlib import Path
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, Text, DateTime, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Session
@@ -18,7 +17,9 @@ def get_database_url():
             url = st.secrets["DATABASE_URL"]
         except:
             pass
-    return url or f"sqlite:///{Path(__file__).parent}/jobs.db"
+    if not url:
+        raise RuntimeError("DATABASE_URL is not set. Add it to .env or Streamlit secrets.")
+    return url
 
 
 DATABASE_URL = get_database_url()

@@ -1,6 +1,6 @@
 # Job Radar
 
-A personal job tracking pipeline that scrapes listings from Indeed, LinkedIn, and Glassdoor, scores them for relevance using Claude AI, surfaces the best matches in a password-protected dashboard, and sends a nightly email digest.
+A personal job tracking pipeline that scrapes listings from Indeed and LinkedIn, scores them for relevance using Claude AI, surfaces the best matches in a password-protected dashboard, and sends a nightly email digest.
 
 Built in Python with a fully automated cloud infrastructure: jobs are scraped and enriched twice daily via GitHub Actions, stored in Postgres on Supabase, and served via a Streamlit dashboard.
 
@@ -8,7 +8,7 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 
 ## What it does
 
-1. **Scrapes** job postings from Indeed, LinkedIn, and Glassdoor using [JobSpy](https://github.com/speedyapply/JobSpy)
+1. **Scrapes** job postings from Indeed and LinkedIn using [JobSpy](https://github.com/speedyapply/JobSpy)
 2. **Classifies** each posting by apply type (ATS, company site, aggregator) for informational purposes in the dashboard
 3. **Enriches** each job using the Claude API (Haiku), scoring relevance 1–10 against a custom candidate profile including resume, experience level, location preferences, and domain interests
 4. **Auto-rejects** low-scoring jobs so the dashboard stays clean
@@ -21,7 +21,7 @@ Built in Python with a fully automated cloud infrastructure: jobs are scraped an
 
 | Layer | Tool                                   |
 |---|----------------------------------------|
-| Scraping | JobSpy (Indeed + LinkedIn + Glassdoor) |
+| Scraping | JobSpy (Indeed + LinkedIn) |
 | Classification | Python + regex (ATS domain whitelist)  |
 | AI enrichment | Anthropic Claude API (Haiku 4.5)       |
 | Database | PostgreSQL via Supabase                |
@@ -87,8 +87,8 @@ Edit `config/config.py` with your personal information:
 - **`EMAIL_ALERT_THRESHOLD`** — minimum relevance score (1–10) to include in the nightly digest. Default is 6.
 - **`SEARCH_TERMS`** — search queries to run. Keep this short — the AI handles relevance filtering so a few broad terms are enough, and too many rapid requests can trigger temporary IP blocks.
 - **`RELEVANCE_SCORE_INSTRUCTIONS`** — customize how Claude scores jobs. Add or remove criteria based on what matters to you (seniority, domain, location, etc).
-- **`SYSTEM_PROMPT`** — the system prompt sent to Claude before scoring each job. Controls how the AI interprets and responds to the job description. Rarely needs changing but useful if you want to adjust the output format or tone of the scoring
-- **`USER_PROFILE`** — your resume summary, experience level, location preferences, and interests. This is what Claude uses to score jobs.
+- **`SYSTEM_PROMPT`** — the system prompt sent to Claude before scoring each job. Enforces output format (JSON only). Rarely needs changing.
+- **`USER_PROFILE`** — your background: work history, skills, and domain experience. Claude uses this as context when scoring jobs.
 
 > **Note:** `config/config.py` is gitignored and will never be committed. Your resume stays local.
 
