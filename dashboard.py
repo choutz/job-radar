@@ -9,13 +9,26 @@ st.set_page_config(page_title="Job Refresh", layout="wide")
 def check_password():
     if st.session_state.get("authenticated"):
         return True
-    pwd = st.text_input("Password", type="password")
-    if st.button("Login"):
-        if pwd == st.secrets.get("password", "changeme"):
-            st.session_state.authenticated = True
-            st.rerun()
-        else:
-            st.error("Wrong password")
+    st.markdown("<br>" * 4, unsafe_allow_html=True)
+    _, col, _ = st.columns([2, 1, 2])
+    with col:
+        # inject autocomplete="current-password" so Chrome doesn't offer to generate a password
+        st.markdown(
+            """<script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const inputs = document.querySelectorAll('input[type="password"]');
+                inputs.forEach(el => el.setAttribute("autocomplete", "current-password"));
+            });
+            </script>""",
+            unsafe_allow_html=True,
+        )
+        pwd = st.text_input("Password", type="password", label_visibility="collapsed", placeholder="Password")
+        if st.button("Login", use_container_width=True):
+            if pwd == st.secrets.get("password", "changeme"):
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("Wrong password")
     return False
 
 
