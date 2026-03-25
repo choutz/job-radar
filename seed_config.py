@@ -1,5 +1,5 @@
 from models import get_session, Config
-from config.config import EMAIL_ALERT_THRESHOLD, SEARCH_TERMS, RELEVANCE_SCORE_INSTRUCTIONS, SYSTEM_PROMPT, USER_PROFILE
+from config.config import EMAIL_ALERT_THRESHOLD, SEARCH_TERMS, RELEVANCE_SCORE_INSTRUCTIONS, SYSTEM_PROMPT, USER_PROFILE, COVER_LETTER_NAME, COVER_LETTER_CONTACT
 import json
 
 def seed():
@@ -8,8 +8,10 @@ def seed():
             "EMAIL_ALERT_THRESHOLD": str(EMAIL_ALERT_THRESHOLD),
             "SEARCH_TERMS": json.dumps(SEARCH_TERMS),
             "RELEVANCE_SCORE_INSTRUCTIONS": RELEVANCE_SCORE_INSTRUCTIONS,
-            'SYSTEM_PROMPT': SYSTEM_PROMPT,
+            "SYSTEM_PROMPT": SYSTEM_PROMPT,
             "USER_PROFILE": USER_PROFILE,
+            "COVER_LETTER_NAME": COVER_LETTER_NAME,
+            "COVER_LETTER_CONTACT": COVER_LETTER_CONTACT,
         }
         for key, value in configs.items():
             existing = session.get(Config, key)

@@ -135,3 +135,20 @@ for job in jobs:
                         j.status = "rejected"
                         s.commit()
                     st.rerun()
+
+            cl_key = f"cl_bytes_{job.id}"
+            if st.button("📝 Cover Letter", key=f"gen_cl_{job.id}", use_container_width=True):
+                with st.spinner("Generating cover letter..."):
+                    from cover_letter import build_cover_letter_doc
+                    st.session_state[cl_key] = build_cover_letter_doc(job)
+
+            if cl_key in st.session_state:
+                safe_company = job.company.replace(" ", "_")
+                st.download_button(
+                    "⬇️ Download .docx",
+                    data=st.session_state[cl_key],
+                    file_name=f"cover_letter_{safe_company}.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    key=f"dl_cl_{job.id}",
+                    use_container_width=True,
+                )

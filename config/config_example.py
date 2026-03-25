@@ -11,6 +11,10 @@ After editing, run `python seed_config.py` to push your changes to the database.
 # Minimum relevance score (1-10) to include in the nightly email digest.
 EMAIL_ALERT_THRESHOLD = 6
 
+# Your name and contact line for cover letter header/signature.
+COVER_LETTER_NAME = "Your Name"
+COVER_LETTER_CONTACT = "your.email@example.com | (555) 555-5555 | City, ST"
+
 
 # Search queries passed to JobSpy. Keep this list short — the AI handles
 # relevance filtering, so a few broad terms are enough. Too many rapid
