@@ -19,12 +19,12 @@ def _get_client():
 
 
 def _set_font(run, bold=False, size_pt=11):
-    run.font.name = "Helvetica Neue"
+    run.font.name = "Helvetica"
     run.font.size = Pt(size_pt)
     run.bold = bold
     # Also set the theme font so Word doesn't override it
-    run._element.rPr.rFonts.set(qn("w:ascii"), "Calibri")
-    run._element.rPr.rFonts.set(qn("w:hAnsi"), "Calibri")
+    run._element.rPr.rFonts.set(qn("w:ascii"), "Helvetica")
+    run._element.rPr.rFonts.set(qn("w:hAnsi"), "Helvetica")
 
 
 def _add_tight_paragraph(doc, text, bold=False, size_pt=11):
