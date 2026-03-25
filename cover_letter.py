@@ -1,6 +1,7 @@
 import io
+import os
+import streamlit as st
 from datetime import date
-
 from anthropic import Anthropic
 from docx import Document
 from docx.shared import Pt, Inches
@@ -10,7 +11,11 @@ from dotenv import load_dotenv
 from models import get_config, Job
 
 load_dotenv()
-client = Anthropic()
+
+
+def _get_client():
+    api_key = os.environ.get("ANTHROPIC_API_KEY") or st.secrets.get("ANTHROPIC_API_KEY")
+    return Anthropic(api_key=api_key)
 
 
 def _set_font(run, bold=False, size_pt=11):
@@ -56,7 +61,7 @@ Job Title: {job.title}
 Company: {job.company}
 Job Description: {job.description[:10000] if job.description else 'N/A'}
 """
-    response = client.messages.create(
+    response = _get_client().messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=1000,
         messages=[{"role": "user", "content": prompt}],
