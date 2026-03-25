@@ -19,7 +19,7 @@ def _get_client():
 
 
 def _set_font(run, bold=False, size_pt=11):
-    run.font.name = "Calibri"
+    run.font.name = "Helvetica Neue"
     run.font.size = Pt(size_pt)
     run.bold = bold
     # Also set the theme font so Word doesn't override it
@@ -85,7 +85,7 @@ def build_cover_letter_doc(job: Job) -> bytes:
         section.right_margin = Inches(1.25)
 
     # --- Header block (tight, no spacing between lines) ---
-    _add_tight_paragraph(doc, name, bold=True)
+    _add_tight_paragraph(doc, name)
     _add_tight_paragraph(doc, contact)
     _add_tight_paragraph(doc, date.today().strftime("%B %d, %Y"))
     _add_tight_paragraph(doc, job.company)
