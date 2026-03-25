@@ -54,7 +54,7 @@ Be specific to this role and company. Be concise and professional.
 
 Job Title: {job.title}
 Company: {job.company}
-Job Description: {job.description[:8000] if job.description else 'N/A'}
+Job Description: {job.description[:10000] if job.description else 'N/A'}
 """
     response = client.messages.create(
         model="claude-haiku-4-5-20251001",
