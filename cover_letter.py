@@ -65,9 +65,9 @@ Job Description: {job.description[:10000] if job.description else 'N/A'}
         model="claude-haiku-4-5-20251001",
         max_tokens=1000,
         messages=[{"role": "user", "content": prompt}],
-        system="You are a professional cover letter writer. Write compelling, tailored cover letters.",
+        system="You are a professional cover letter writer. Write compelling, tailored cover letters. Never use em-dashes (—).",
     )
-    return response.content[0].text.strip()
+    return response.content[0].text.strip().replace("\u2014", "-")
 
 
 def build_cover_letter_doc(job: Job) -> bytes:
