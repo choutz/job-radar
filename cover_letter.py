@@ -59,11 +59,11 @@ Be specific to this role and company. Be concise and professional.
 
 Job Title: {job.title}
 Company: {job.company}
-Job Description: {job.description[:10000] if job.description else 'N/A'}
+Job Description: {job.description if job.description else 'N/A'}
 """
     response = _get_client().messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=1000,
+        max_tokens=1500,
         messages=[{"role": "user", "content": prompt}],
         system="You are a professional cover letter writer. Write compelling, tailored cover letters. Never use em-dashes (—).",
     )

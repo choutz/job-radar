@@ -20,12 +20,12 @@ def get_prompt(job: Job):
 Here is a job posting:
 Title: {job.title}
 Company: {job.company}
-Description: {job.description[:10000] if job.description else 'N/A'}
+Description: {job.description if job.description else 'N/A'}
 
 Score this posting using the following rubric and return a JSON object with exactly these fields:
 {{
   "relevance_score": {relevance_score_instructions},
-  "relevance_reason": <one sentence why>,
+  "relevance_reason": <2-3 sentence explanation>,
   "seniority": <"junior", "mid", "senior", or "staff">,
   "role_type": <e.g. "demand forecasting", "ML engineering", "general DS", "analytics">,
   "years_experience_required": <integer or null, not string>,
@@ -47,7 +47,7 @@ def enrich_job(job: Job) -> dict:
     prompt = get_prompt(job)
     response = client.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=500,  # json response should never exceed this
+        max_tokens=1500,  # json response should never exceed this
         messages=[
             MessageParam(role="user", content=prompt)
         ],
